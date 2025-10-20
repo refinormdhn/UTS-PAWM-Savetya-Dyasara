@@ -295,6 +295,27 @@ main {
   margin-bottom: 1rem;
 }
 
+/* === Quiz Button === */
+.cta-button {
+  display: inline-block;
+  background: #2C698D;
+  color: #FFFFFF;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border: 2px solid #2C698D;
+  box-shadow: 0 2px 8px rgba(44, 105, 141, 0.2);
+}
+
+.cta-button:hover {
+  background: #1E4D6B;
+  border-color: #1E4D6B;
+  box-shadow: 0 4px 12px rgba(44, 105, 141, 0.3);
+}
+
 /* === Footer === */
 footer {
   background: #272643;
