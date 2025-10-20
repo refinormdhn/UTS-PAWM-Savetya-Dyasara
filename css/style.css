@@ -1,0 +1,125 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #BAE8E8 0%, #E3F6F5 100%);
+}
+
+/* navigation bar */
+nav {
+  background: #fff;
+  padding: 1rem 3rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.nav-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo img { height: 45px; }
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.nav-menu a {
+  text-decoration: none;
+  color: #272643;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.nav-menu a:hover { color: #2C698D; }
+
+.profile-icon {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.hero-section {
+  max-width: 1000px;
+  margin: 4rem auto;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  color: #272643;
+}
+
+.hero-content .highlight { color: #2C698D; }
+.hero-content p { color: #555; margin-top: 1rem; line-height: 1.5; }
+.cta-button {
+  display: inline-block;
+  background: #2C698D;
+  color: #fff;
+  padding: 0.8rem 1.8rem;
+  border-radius: 50px;
+  margin-top: 1.5rem;
+  text-decoration: none;
+  transition: 0.3s;
+}
+.cta-button:hover { background: #1E4D6B; }
+
+.hero-image img { max-width: 100%; border-radius: 10px; }
+
+/* footer */
+footer {
+  background: #272643;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.9rem;
+  margin-top: 3rem;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.active { display: flex; }
+
+.modal-content {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  width: 90%;
+  max-width: 350px;
+}
+
+.modal-buttons { display: flex; gap: 1rem; justify-content: center; margin-top: 1rem; }
+
+.modal-button {
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.modal-button.cancel { background: #95a5a6; color: #fff; }
+.modal-button.confirm { background: #e74c3c; color: #fff; }
+.modal-button:hover { opacity: 0.9; }

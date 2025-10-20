@@ -1,351 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speech Acts - Interactive Learning Platform</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #BAE8E8 0%, #E3F6F5 100%);
-        }
-
-        nav {
-            background: #FFFFFF;
-            padding: 1rem 3rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 50px;
-        }
-
-        .nav-logo {
-            cursor: pointer;
-            line-height: 0;
-        }
-
-        .nav-logo img {
-            height: 50px;
-            width: auto;
-            display: block;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 3rem;
-            align-items: center;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-menu li {
-            margin: 0;
-            padding: 0;
-            line-height: 1;
-        }
-
-        .nav-menu a {
-            text-decoration: none;
-            color: #272643;
-            font-weight: 600;
-            font-size: 1.2rem;
-            transition: color 0.3s ease;
-            position: relative;
-        }
-
-        .nav-menu a:hover {
-            color: #2C698D;
-        }
-
-        .nav-menu a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: #2C698D;
-            transition: width 0.3s ease;
-        }
-
-        .nav-menu a:hover::after {
-            width: 100%;
-        }
-
-        .hero-section {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-            min-height: 70vh;
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            color: #272643;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-        }
-
-        .hero-content h1 .highlight {
-            color: #2C698D;
-        }
-
-        .hero-content p {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-
-        .hero-content .creator {
-            font-size: 1rem;
-            color: #2C698D;
-            font-weight: 600;
-            margin-bottom: 2.5rem;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: #2C698D;
-            color: #FFFFFF;
-            padding: 1rem 2.5rem;
-            border-radius: 50px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(44,105,141,0.3);
-        }
-
-        .cta-button:hover {
-            background: #1e4d6b;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(44,105,141,0.4);
-        }
-
-        .hero-image {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .hero-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 20px;
-        }
-
-        footer {
-            background: #272643;
-            color: #FFFFFF;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        footer p {
-            margin: 0;
-            opacity: 0.8;
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            animation: slideUp 0.3s ease;
-        }
-
-        .modal-content h3 {
-            color: #272643;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .modal-content p {
-            color: #666;
-            margin-bottom: 2rem;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-        }
-
-        .modal-button {
-            padding: 0.8rem 2rem;
-            border: none;
-            border-radius: 50px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .modal-button.confirm {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .modal-button.confirm:hover {
-            background: #c0392b;
-            transform: translateY(-2px);
-        }
-
-        .modal-button.cancel {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .modal-button.cancel:hover {
-            background: #7f8c8d;
-            transform: translateY(-2px);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @media (max-width: 968px) {
-            .hero-section {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-
-            .hero-content h1 {
-                font-size: 2.5rem;
-            }
-
-            .nav-menu {
-                gap: 1.5rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Presentation Guide - Interactive Learning Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <nav>
-        <div class="nav-container">
-            <div class="nav-logo" onclick="window.location.href='index.html'">
-                <img src="img/logo.png" alt="Logo">
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="learn.html">Learn</a></li>
-                <li><a href="quiz.html">Quiz</a></li>
-                <li><img src="img/profile.png" alt="Profile" id="profileIcon" style="height: 40px; width: 40px; border-radius: 50%; cursor: pointer; object-fit: cover;"></li>
-            </ul>
-        </div>
-    </nav>
-
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1>Elevate your voice, <span class="highlight">master</span> the art of presentation</h1>
-            <p class="creator">by Savetya Dyasara</p>
-            <p>Online education allows you to learn anytime, anywhere. Our e-learning platform ensures an effective experience with modern content and expert instructors.</p>
-            <a href="learn.html" class="cta-button">Start Learning</a>
-        </div>
-        <div class="hero-image">
-            <img src="img/home.png" alt="Learning Illustration">
-        </div>
-    </section>
-
-    <footer>
-        <p>© 2025 Speech Acts Interactive Learning Platform | UTS-PAWM-Savetya-Dyasara</p>
-    </footer>
-
-    <!-- Logout Modal -->
-    <div id="logoutModal" class="modal">
-        <div class="modal-content">
-            <h3>Logout Confirmation</h3>
-            <p>Are you sure you want to logout?</p>
-            <div class="modal-buttons">
-                <button class="modal-button cancel" onclick="closeLogoutModal()">Cancel</button>
-                <button class="modal-button confirm" onclick="confirmLogout()">Logout</button>
-            </div>
-        </div>
+  <nav>
+    <div class="nav-container">
+      <div class="nav-logo" onclick="window.location.href='index.html'">
+        <img src="img/logo.png" alt="Logo">
+      </div>
+      <ul class="nav-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="learn.html">Learn</a></li>
+        <li><a href="quiz.html">Quiz</a></li>
+        <li>
+          <img src="img/profile.png" alt="Profile" id="profileIcon" class="profile-icon">
+        </li>
+      </ul>
     </div>
+  </nav>
 
-    <script>
-        // Check if user is logged in
-        const user = localStorage.getItem('user');
-        const profileIcon = document.getElementById('profileIcon');
+  <section class="hero-section">
+    <div class="hero-content">
+      <h1>Elevate your voice, <span class="highlight">master</span> the art of presentation</h1>
+      <p class="creator">by Savetya Dyasara</p>
+      <p>Online education allows you to learn anytime, anywhere. Our e-learning platform ensures an effective experience with modern content and expert instructors.</p>
+      <a href="learn.html" class="cta-button">Start Learning</a>
+    </div>
+    <div class="hero-image">
+      <img src="img/home.png" alt="Learning Illustration">
+    </div>
+  </section>
 
-        profileIcon.addEventListener('click', function() {
-            if (user) {
-                // User is logged in, show logout modal
-                document.getElementById('logoutModal').classList.add('active');
-            } else {
-                // User is not logged in, redirect to login page
-                window.location.href = 'login.html';
-            }
-        });
+  <footer>
+    <p>Master your presentation skills with Savetya Dyasara</p>
+  </footer>
 
-        function closeLogoutModal() {
-            document.getElementById('logoutModal').classList.remove('active');
-        }
+  <div id="logoutModal" class="modal">
+    <div class="modal-content">
+      <h3>Logout Confirmation</h3>
+      <p>Are you sure you want to logout?</p>
+      <div class="modal-buttons">
+        <button class="modal-button cancel" onclick="closeLogoutModal()">Cancel</button>
+        <button class="modal-button confirm" onclick="confirmLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
 
-        function confirmLogout() {
-            localStorage.removeItem('user');
-            alert('You have been logged out successfully!');
-            window.location.href = 'login.html';
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('logoutModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeLogoutModal();
-            }
-        });
-    </script>
+  <script src="js/script.js"></script>
 </body>
 </html>
