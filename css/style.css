@@ -103,11 +103,15 @@ nav {
 /* footer */
 footer {
   background: #272643;
-  color: #fff;
+  color: #FFFFFF;
   text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  margin-top: 3rem;
+  padding: 2rem;
+  margin-top: 4rem;
+}
+
+footer p {
+  margin: 0;
+  opacity: 0.8;
 }
 
 .modal {
