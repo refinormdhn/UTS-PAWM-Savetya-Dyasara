@@ -8,12 +8,12 @@ body {
 
 /* navigation bar */
 nav {
-  background: #fff;
-  padding: 1rem 3rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: #FFFFFF;
+  padding: 0.6rem 2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 1000;
 }
 
 .nav-container {
@@ -24,22 +24,42 @@ nav {
   align-items: center;
 }
 
-.nav-logo img { height: 45px; }
+.nav-logo {
+  cursor: pointer;
+}
+
+.nav-logo img {
+  height: 38px;
+  width: auto;
+  display: block;
+}
 
 .nav-menu {
   display: flex;
   list-style: none;
   gap: 2rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-menu li {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
 }
 
 .nav-menu a {
   text-decoration: none;
   color: #272643;
   font-weight: 600;
-  transition: color 0.3s;
+  font-size: 1rem;
+  position: relative;
 }
 
-.nav-menu a:hover { color: #2C698D; }
+.nav-menu a:hover {
+  color: #2C698D;
+}
 
 .profile-icon {
   height: 40px;
