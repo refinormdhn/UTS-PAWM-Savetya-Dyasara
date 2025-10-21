@@ -25,10 +25,10 @@
     <div id="quizSelection" class="quiz-selection">
       <h2>Select Material</h2>
       <p>Choose a quiz topic below:</p>
-      <div class="quiz-option" onclick="startQuiz(1)">🧭 Engaging Your Audience</div>
-      <div class="quiz-option" onclick="startQuiz(2)">📊 Visual Aids & Body</div>
-      <div class="quiz-option" onclick="startQuiz(3)">🎤 Handling Questions</div>
-      <div class="quiz-option" onclick="startQuiz(4)">🪶 Delivery Techniques</div>
+      <div class="quiz-option">🧭 Engaging Your Audience</div>
+      <div class="quiz-option">📊 Visual Aids & Body</div>
+      <div class="quiz-option">🎤 Handling Questions</div>
+      <div class="quiz-option">🪶 Delivery Techniques</div>
     </div>
 
     <div id="quizContent" style="display:none;">
@@ -51,7 +51,7 @@
     <div id="resultCard" class="result-card" style="display:none;">
       <h2>🎉 Quiz Complete!</h2>
       <p><strong>Your Score:</strong> <span id="scoreDisplay"></span></p>
-      <button class="nav-button" onclick="backToSelection()">Back to Materials</button>
+      <button class="nav-button" id="backButton">Back to Materials</button>
     </div>
   </div>
 
@@ -68,6 +68,6 @@
     </div>
   </div>
 
-  <script src="js/quiz.js"></script>
+  <script type="module" src="js/quiz.js"></script>
 </body>
 </html>

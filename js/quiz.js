@@ -1,3 +1,9 @@
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+const SUPABASE_URL = "https://zvkelfhmrjfvveembihp.supabase.co";
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2a2VsZmhtcmpmdnZlZW1iaWhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NTQxOTIsImV4cCI6MjA3NjIzMDE5Mn0.pYNKv2BwrWwG2eJDrPBlXr8S3lLptoVph9Ql0y4IIO0';
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
 const user = localStorage.getItem('user');
 const profileIcon = document.getElementById('profileIcon');
 
@@ -20,71 +26,79 @@ document.getElementById('logoutModal').addEventListener('click', e => {
   if (e.target === e.currentTarget) closeLogoutModal();
 });
 
-const quizData = {
-  1: [
-    {
-      question: "What is the first step in engaging your audience?",
-      options: ["Understanding audience needs", "Starting with a joke", "Reading from slides", "Avoiding eye contact"],
-      correct: ["Understanding audience needs", "Starting with a joke"]
-    },
-    {
-      question: "Order the steps for a good presentation opening:",
-      options: ["Hook", "Introduction", "Agenda", "Main content"],
-      correct: ["Hook", "Introduction", "Agenda", "Main content"]
-    }
-  ],
-  2: [
-    {
-      question: "What makes an effective visual aid?",
-      options: ["Simple and clear", "Text-heavy slides", "Complex graphs", "Minimal text"],
-      correct: ["Simple and clear", "Minimal text"]
-    },
-    {
-      question: "Order the presentation structure:",
-      options: ["Introduction", "Body", "Conclusion", "Q&A"],
-      correct: ["Introduction", "Body", "Conclusion", "Q&A"]
-    }
-  ],
-  3: [
-    {
-      question: "Best practices for handling questions:",
-      options: ["Listen carefully", "Interrupt quickly", "Acknowledge the question", "Guess the answer"],
-      correct: ["Listen carefully", "Acknowledge the question"]
-    },
-    {
-      question: "Effective body language includes:",
-      options: ["Eye contact", "Slouching", "Open gestures", "Crossed arms"],
-      correct: ["Eye contact", "Open gestures"]
-    }
-  ],
-  4: [
-    {
-      question: "Key delivery techniques:",
-      options: ["Clear voice", "Monotone speech", "Appropriate pace", "Rushing through"],
-      correct: ["Clear voice", "Appropriate pace"]
-    },
-    {
-      question: "Order conclusion elements:",
-      options: ["Summary", "Call to action", "Final thanks", "New information"],
-      correct: ["Summary", "Call to action", "Final thanks"]
-    }
-  ]
-};
-
+let quizData = {};
 let currentQuiz = [];
 let currentQuestion = 0;
 let userAnswers = [];
 let draggedElement = null;
+let draggedFromAnswer = false;
 
-function startQuiz(materialId) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const paramMaterial = urlParams.get('material');
+async function loadQuizData() {
+  try {
+    const { data, error } = await supabase
+      .from('quiz_questions')
+      .select('*')
+      .order('topic', { ascending: true })
+      .order('id', { ascending: true });
+
+    if (error) {
+      console.error('Supabase error:', error);
+      throw error;
+    }
+
+    if (!data || data.length === 0) {
+      console.warn('No questions found in database');
+      alert('No questions available. Please contact administrator.');
+      return false;
+    }
+
+    quizData = {};
+    data.forEach(q => {
+      if (!quizData[q.topic]) {
+        quizData[q.topic] = [];
+      }
+      
+      // Normalize correct answer format
+      let correctAnswer;
+      if (q.type === 'ordering') {
+        correctAnswer = q.order_sequence; // Already an array
+      } else {
+        // For multiple_choice, convert string to array
+        correctAnswer = Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer];
+      }
+      
+      quizData[q.topic].push({
+        question: q.question,
+        options: q.options,
+        correct: correctAnswer,
+        type: q.type
+      });
+    });
+
+    console.log('Quiz data loaded successfully:', quizData);
+    return true;
+  } catch (error) {
+    console.error('Error loading quiz data:', error);
+    alert('Failed to load quiz questions. Please try again.\n\nError: ' + error.message);
+    return false;
+  }
+}
+
+async function startQuiz(materialId) {
+  console.log('Starting quiz for material:', materialId);
   
-  if (paramMaterial) {
-    materialId = parseInt(paramMaterial);
+  if (Object.keys(quizData).length === 0) {
+    const loaded = await loadQuizData();
+    if (!loaded) return;
   }
 
-  currentQuiz = quizData[materialId] || quizData[1];
+  currentQuiz = quizData[materialId] || [];
+  
+  if (currentQuiz.length === 0) {
+    alert('No questions available for this material.');
+    return;
+  }
+
   currentQuestion = 0;
   userAnswers = new Array(currentQuiz.length).fill(null);
 
@@ -102,10 +116,65 @@ function loadQuestion() {
   const answerArea = document.getElementById('answerArea');
   const optionsContainer = document.getElementById('optionsContainer');
 
-  answerArea.innerHTML = userAnswers[currentQuestion] 
-    ? userAnswers[currentQuestion].map(ans => `<div class="option filled">${ans}</div>`).join('')
-    : '<span style="color:#888">Drag options here to order your answer</span>';
+  // Display answer area
+  if (q.type === 'ordering') {
+    if (userAnswers[currentQuestion] && userAnswers[currentQuestion].length > 0) {
+      answerArea.innerHTML = '';
+      userAnswers[currentQuestion].forEach((ans, index) => {
+        const div = document.createElement('div');
+        div.className = 'option filled';
+        div.textContent = ans;
+        div.draggable = true;
+        div.dataset.index = index;
+        
+        div.addEventListener('dragstart', e => {
+          draggedElement = ans;
+          draggedFromAnswer = true;
+          e.dataTransfer.effectAllowed = 'move';
+          div.style.opacity = '0.5';
+        });
+        
+        div.addEventListener('dragend', e => {
+          div.style.opacity = '1';
+          draggedFromAnswer = false;
+        });
+        
+        div.addEventListener('dragover', e => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+        });
+        
+        div.addEventListener('drop', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          if (draggedFromAnswer && draggedElement !== ans) {
+            const draggedIndex = userAnswers[currentQuestion].indexOf(draggedElement);
+            const targetIndex = index;
+            
+            const newAnswers = [...userAnswers[currentQuestion]];
+            newAnswers.splice(draggedIndex, 1);
+            newAnswers.splice(targetIndex, 0, draggedElement);
+            userAnswers[currentQuestion] = newAnswers;
+            
+            draggedElement = null;
+            draggedFromAnswer = false;
+            loadQuestion();
+          }
+        });
+        
+        answerArea.appendChild(div);
+      });
+    } else {
+      answerArea.innerHTML = '<span style="color:#888">Drag options here to order your answer</span>';
+    }
+  } else {
+    answerArea.innerHTML = userAnswers[currentQuestion] && userAnswers[currentQuestion].length > 0
+      ? userAnswers[currentQuestion].map(ans => `<div class="option filled">${ans}</div>`).join('')
+      : '<span style="color:#888">Drag one option here</span>';
+  }
 
+  // Display options
   optionsContainer.innerHTML = '';
   q.options.forEach(opt => {
     if (!userAnswers[currentQuestion] || !userAnswers[currentQuestion].includes(opt)) {
@@ -116,6 +185,7 @@ function loadQuestion() {
       
       div.addEventListener('dragstart', e => {
         draggedElement = opt;
+        draggedFromAnswer = false;
         e.dataTransfer.effectAllowed = 'move';
       });
       
@@ -123,9 +193,12 @@ function loadQuestion() {
     }
   });
 
+  // Setup drop area
   answerArea.ondragover = e => {
     e.preventDefault();
-    answerArea.classList.add('drag-over');
+    if (!draggedFromAnswer) {
+      answerArea.classList.add('drag-over');
+    }
   };
 
   answerArea.ondragleave = () => {
@@ -133,6 +206,10 @@ function loadQuestion() {
   };
 
   answerArea.ondrop = e => {
+    if (draggedFromAnswer) {
+      return;
+    }
+    
     e.preventDefault();
     answerArea.classList.remove('drag-over');
     
@@ -140,7 +217,15 @@ function loadQuestion() {
       if (!userAnswers[currentQuestion]) {
         userAnswers[currentQuestion] = [];
       }
-      userAnswers[currentQuestion].push(draggedElement);
+
+      if (q.type === 'multiple_choice') {
+        userAnswers[currentQuestion] = [draggedElement];
+      } else {
+        userAnswers[currentQuestion].push(draggedElement);
+      }
+      
+      draggedElement = null;
+      draggedFromAnswer = false;
       loadQuestion();
     }
   };
@@ -166,17 +251,59 @@ document.getElementById('nextButton').addEventListener('click', () => {
 });
 
 function submitQuiz() {
-  let score = 0;
+  let correctCount = 0;
+  let wrongCount = 0;
+  
   currentQuiz.forEach((q, idx) => {
     const userAns = userAnswers[idx];
-    if (userAns && JSON.stringify(userAns) === JSON.stringify(q.correct)) {
-      score++;
+    const correctAns = q.correct;
+    
+    console.log(`Question ${idx + 1}:`, {
+      userAnswer: userAns,
+      correctAnswer: correctAns,
+      match: JSON.stringify(userAns) === JSON.stringify(correctAns)
+    });
+    
+    if (userAns && JSON.stringify(userAns) === JSON.stringify(correctAns)) {
+      correctCount++;
+    } else {
+      wrongCount++;
     }
   });
 
+  const totalQuestions = currentQuiz.length;
+  const percentage = Math.round((correctCount / totalQuestions) * 100);
+
   document.getElementById('quizContent').style.display = 'none';
   document.getElementById('resultCard').style.display = 'block';
-  document.getElementById('scoreDisplay').textContent = `${score} / ${currentQuiz.length}`;
+  
+  let resultMessage = '';
+  let resultEmoji = '';
+  
+  if (percentage >= 80) {
+    resultMessage = 'Excellent! 🎉';
+    resultEmoji = '🌟';
+  } else if (percentage >= 60) {
+    resultMessage = 'Good Job! 👍';
+    resultEmoji = '😊';
+  } else if (percentage >= 40) {
+    resultMessage = 'Keep Practicing! 💪';
+    resultEmoji = '📚';
+  } else {
+    resultMessage = 'Need More Practice 📖';
+    resultEmoji = '🔄';
+  }
+
+  document.getElementById('scoreDisplay').innerHTML = `
+    <div style="font-size: 3rem; margin: 1rem 0;">${resultEmoji}</div>
+    <div style="font-size: 2rem; font-weight: bold; color: #2c698d; margin: 1rem 0;">${percentage}%</div>
+    <div style="font-size: 1.3rem; margin: 1rem 0;">${resultMessage}</div>
+    <div style="margin-top: 1.5rem; font-size: 1.1rem;">
+      <div style="margin: 0.5rem 0;">✅ Correct: <strong>${correctCount}</strong></div>
+      <div style="margin: 0.5rem 0;">❌ Wrong: <strong>${wrongCount}</strong></div>
+      <div style="margin: 0.5rem 0;">📊 Total: <strong>${totalQuestions}</strong></div>
+    </div>
+  `;
 }
 
 function backToSelection() {
@@ -187,13 +314,28 @@ function backToSelection() {
   userAnswers = [];
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const materialId = urlParams.get('material');
-if (materialId) {
-  startQuiz(parseInt(materialId));
-}
+document.getElementById('backButton').addEventListener('click', backToSelection);
 
-window.startQuiz = startQuiz;
-window.backToSelection = backToSelection;
 window.closeLogoutModal = closeLogoutModal;
 window.confirmLogout = confirmLogout;
+
+loadQuizData().then((success) => {
+  if (success) {
+    const quizOptions = document.querySelectorAll('.quiz-option');
+    console.log('Quiz options found:', quizOptions.length);
+    
+    quizOptions.forEach((option, index) => {
+      option.addEventListener('click', () => {
+        console.log('Quiz option clicked:', index + 1);
+        startQuiz(index + 1);
+      });
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const materialId = urlParams.get('material');
+    if (materialId) {
+      console.log('Auto-starting quiz from URL:', materialId);
+      startQuiz(parseInt(materialId));
+    }
+  }
+});
