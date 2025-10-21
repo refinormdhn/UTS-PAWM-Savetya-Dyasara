@@ -210,11 +210,19 @@ nav {
 }
 
 footer {
-  text-align: center;
-  color: #fff;
   background: #272643;
-  padding: 1rem;
-  margin-top: 4rem;
+  color: white;
+  text-align: center;
+  padding: 1.5rem 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+body {
+  padding-bottom: 70px;
 }
 
 .modal {

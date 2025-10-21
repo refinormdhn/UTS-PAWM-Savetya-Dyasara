@@ -8,6 +8,7 @@ body {
   font-family: "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   background: linear-gradient(135deg, #BAE8E8 0%, #E3F6F5 100%);
+  padding-bottom: 70px;
 }
 
 nav {
@@ -326,13 +327,16 @@ main {
   box-shadow: 0 4px 12px rgba(44, 105, 141, 0.3);
 }
 
-/* === Footer === */
 footer {
   background: #272643;
-  color: #FFFFFF;
+  color: white;
   text-align: center;
-  padding: 2rem;
-  margin-top: 4rem;
+  padding: 1.5rem 0;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
 }
 
 footer p {
