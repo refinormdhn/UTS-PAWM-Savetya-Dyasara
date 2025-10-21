@@ -88,7 +88,7 @@ function displayVideos() {
   const videoSection = document.getElementById('videoSection');
   const videos = Array.isArray(currentMaterial.videoUrl)
     ? currentMaterial.videoUrl : [currentMaterial.videoUrl];
-  let html = `<div class="video-section"><h3>Video Tutorial${videos.length>1?'s':''}</h3>`;
+  let html = `<div class="video-section"><h3>Learning Video${videos.length>1?'s':''}</h3>`;
   videos.forEach((v, i) => {
     html += `
       ${videos.length>1?`<h4 class="video-title">Video Part ${i+1}</h4>`:''}
