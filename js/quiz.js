@@ -32,6 +32,7 @@ let currentQuestion = 0;
 let userAnswers = [];
 let draggedElement = null;
 let draggedFromAnswer = false;
+let currentMaterialId = null; // Track current material/topic
 
 async function loadQuizData() {
   try {
@@ -58,16 +59,15 @@ async function loadQuizData() {
         quizData[q.topic] = [];
       }
       
-      // Normalize correct answer format
       let correctAnswer;
       if (q.type === 'ordering') {
-        correctAnswer = q.order_sequence; // Already an array
+        correctAnswer = q.order_sequence;
       } else {
-        // For multiple_choice, convert string to array
         correctAnswer = Array.isArray(q.correct_answer) ? q.correct_answer : [q.correct_answer];
       }
       
       quizData[q.topic].push({
+        id: q.id, // Simpan ID question untuk referensi
         question: q.question,
         options: q.options,
         correct: correctAnswer,
@@ -86,6 +86,8 @@ async function loadQuizData() {
 
 async function startQuiz(materialId) {
   console.log('Starting quiz for material:', materialId);
+  
+  currentMaterialId = materialId; // Simpan material ID
   
   if (Object.keys(quizData).length === 0) {
     const loaded = await loadQuizData();
@@ -116,10 +118,8 @@ function loadQuestion() {
   const answerArea = document.getElementById('answerArea');
   const optionsContainer = document.getElementById('optionsContainer');
 
-  // Display answer area
   if (q.type === 'ordering') {
     if (userAnswers[currentQuestion] && userAnswers[currentQuestion].length > 0) {
-      // Render jawaban ordering ke bawah dengan pemisah
       answerArea.innerHTML = '<div class="ordering-list"></div>';
       const list = answerArea.querySelector('.ordering-list');
       userAnswers[currentQuestion].forEach((ans, index) => {
@@ -176,7 +176,6 @@ function loadQuestion() {
       : '<span class="placeholder">Drag one option here</span>';
   }
 
-  // Display options
   optionsContainer.innerHTML = '';
   q.options.forEach(opt => {
     if (!userAnswers[currentQuestion] || !userAnswers[currentQuestion].includes(opt)) {
@@ -195,7 +194,6 @@ function loadQuestion() {
     }
   });
 
-  // Setup drop area
   answerArea.ondragover = e => {
     e.preventDefault();
     if (!draggedFromAnswer) {
@@ -252,29 +250,64 @@ document.getElementById('nextButton').addEventListener('click', () => {
   }
 });
 
-function submitQuiz() {
+async function submitQuiz() {
   let correctCount = 0;
   let wrongCount = 0;
+  const answersToSave = [];
   
   currentQuiz.forEach((q, idx) => {
     const userAns = userAnswers[idx];
     const correctAns = q.correct;
+    const isCorrect = userAns && JSON.stringify(userAns) === JSON.stringify(correctAns);
     
     console.log(`Question ${idx + 1}:`, {
+      questionId: q.id,
       userAnswer: userAns,
       correctAnswer: correctAns,
-      match: JSON.stringify(userAns) === JSON.stringify(correctAns)
+      match: isCorrect
     });
     
-    if (userAns && JSON.stringify(userAns) === JSON.stringify(correctAns)) {
+    if (isCorrect) {
       correctCount++;
     } else {
       wrongCount++;
     }
+
+    answersToSave.push({
+      question_id: q.id,
+      is_correct: isCorrect
+    });
   });
 
   const totalQuestions = currentQuiz.length;
   const percentage = Math.round((correctCount / totalQuestions) * 100);
+
+  const userData = JSON.parse(localStorage.getItem('user'));
+  
+  if (userData && userData.id) {
+    console.log('Saving quiz results to database...');
+    
+    const dataToInsert = answersToSave.map(ans => ({
+      user_id: userData.id,
+      question_id: ans.question_id, // Sekarang ini akan beda-beda per soal
+      is_correct: ans.is_correct
+    }));
+
+    console.log('Data to insert:', dataToInsert);
+
+    const { data, error } = await supabase
+      .from('user_answers')
+      .insert(dataToInsert);
+
+    if (error) {
+      console.error('Error saving quiz results:', error);
+      alert('Failed to save quiz results: ' + error.message);
+    } else {
+      console.log('Quiz results saved successfully!', data);
+    }
+  } else {
+    console.warn('No user logged in, cannot save results');
+  }
 
   document.getElementById('quizContent').style.display = 'none';
   document.getElementById('resultCard').style.display = 'block';
@@ -314,6 +347,7 @@ function backToSelection() {
   currentQuiz = [];
   currentQuestion = 0;
   userAnswers = [];
+  currentMaterialId = null;
 }
 
 document.getElementById('backButton').addEventListener('click', backToSelection);

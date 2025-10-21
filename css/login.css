@@ -15,7 +15,6 @@ body {
     overflow: hidden;
 }
 
-/* Decorative circles */
 body::before {
     content: '';
     position: absolute;
