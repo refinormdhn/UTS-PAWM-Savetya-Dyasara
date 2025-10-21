@@ -119,10 +119,12 @@ function loadQuestion() {
   // Display answer area
   if (q.type === 'ordering') {
     if (userAnswers[currentQuestion] && userAnswers[currentQuestion].length > 0) {
-      answerArea.innerHTML = '';
+      // Render jawaban ordering ke bawah dengan pemisah
+      answerArea.innerHTML = '<div class="ordering-list"></div>';
+      const list = answerArea.querySelector('.ordering-list');
       userAnswers[currentQuestion].forEach((ans, index) => {
         const div = document.createElement('div');
-        div.className = 'option filled';
+        div.className = 'ordering-item option filled';
         div.textContent = ans;
         div.draggable = true;
         div.dataset.index = index;
@@ -163,15 +165,15 @@ function loadQuestion() {
           }
         });
         
-        answerArea.appendChild(div);
+        list.appendChild(div);
       });
     } else {
-      answerArea.innerHTML = '<span style="color:#888">Drag options here to order your answer</span>';
+      answerArea.innerHTML = '<span class="placeholder">Drag options here to order your answer</span>';
     }
   } else {
     answerArea.innerHTML = userAnswers[currentQuestion] && userAnswers[currentQuestion].length > 0
       ? userAnswers[currentQuestion].map(ans => `<div class="option filled">${ans}</div>`).join('')
-      : '<span style="color:#888">Drag one option here</span>';
+      : '<span class="placeholder">Drag one option here</span>';
   }
 
   // Display options

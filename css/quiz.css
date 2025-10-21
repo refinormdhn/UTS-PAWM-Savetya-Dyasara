@@ -123,15 +123,65 @@ nav {
   background: #1e4d6b;
 }
 
+.option.filled {
+  color: #222 !important;
+  background: #c9ecef;
+}
+
 .answer-area {
-  border: 3px dashed #2c698d;
-  border-radius: 12px;
-  background: #e3f6f5;
-  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 4px dashed #4682a9;
+  border-radius: 20px;
+  background: #eaf7f8;
+  position: relative;
+  margin-bottom: 2rem;
+  padding: 1rem 0.5rem;
+}
+
+.answer-area .ordering-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  
+  gap: 0;
+  width: 100%;
+  justify-content: center;
+}
+
+.answer-area .ordering-item {
+  color: #222;
+  background: #c9ecef;
+  margin: 0 0 8px 0;
+  padding: 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 400;
+  cursor: grab;
+  border-bottom: 2px solid #b3dbe6;
+  width: 100%;
   text-align: center;
-  margin: 1.5rem 0;
-  min-height: 100px;
-  transition: all 0.3s;
+  box-sizing: border-box;
+  transition: background 0.2s;
+}
+
+.answer-area .ordering-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.answer-area .placeholder {
+  color: #888;
+  width: 100%;
+  text-align: center;
+  font-size: 1.2rem;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
 }
 
 .answer-area.drag-over {
