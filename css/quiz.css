@@ -211,19 +211,20 @@ nav {
 
 footer {
   background: #272643;
-  color: white;
+  color: #fff;
   text-align: center;
   padding: 1.5rem 0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
+  position: relative;
   width: 100%;
-  z-index: 100;
+  margin-top: 2rem;
+  
 }
 
-body {
-  padding-bottom: 70px;
+footer p {
+  margin: 0;
+  opacity: 0.8;
 }
+
 
 .modal {
   display: none;
