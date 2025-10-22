@@ -51,6 +51,12 @@ const materials = [
 
 let currentMaterial = null;
 
+function formatPdfName(filename) {
+  let name = filename.replace('.pdf', '');
+  name = name.replace(/-/g, ' ');
+  return name;
+}
+
 function showMaterial(id) {
   currentMaterial = materials.find(m => m.id === id);
   document.getElementById('mainView').classList.add('hidden');
@@ -58,16 +64,14 @@ function showMaterial(id) {
   document.getElementById('detailTitle').textContent = currentMaterial.title;
   document.getElementById('detailDescription').textContent = currentMaterial.description;
 
-  // Hide action buttons
   document.getElementById('actionButtons').innerHTML = '';
 
-  // Show PDF directly
-  document.getElementById('pdfFileName').textContent = currentMaterial.pdfFile;
+  const formattedPdfName = formatPdfName(currentMaterial.pdfFile);
+  document.getElementById('pdfFileName').textContent = formattedPdfName;
   const pdfFrame = document.getElementById('pdfFrame');
   pdfFrame.src = 'materials/' + currentMaterial.pdfFile;
   document.getElementById('pdfViewer').classList.add('active');
 
-  // Show videos if available
   const hasVideo = currentMaterial.videoUrl !== null;
   hasVideo ? displayVideos() : document.getElementById('videoSection').innerHTML = '';
 
@@ -75,7 +79,8 @@ function showMaterial(id) {
 }
 
 function showPdf() {
-  document.getElementById('pdfFileName').textContent = currentMaterial.pdfFile;
+  const formattedPdfName = formatPdfName(currentMaterial.pdfFile);
+  document.getElementById('pdfFileName').textContent = formattedPdfName; 
   const pdfFrame = document.getElementById('pdfFrame');
   pdfFrame.src = 'materials/' + currentMaterial.pdfFile;
   document.getElementById('pdfViewer').classList.add('active');
@@ -111,4 +116,35 @@ function goToQuiz() {
     window.location.href = 'quiz.html?material=' + currentMaterial.id;
   else
     window.location.href = 'quiz.html';
+}
+
+async function loadPdfList() {
+  try {
+    const { data, error } = await supabase
+      .storage
+      .from('pdfs') 
+      .list();
+
+    if (error) throw error;
+
+    const pdfContainer = document.getElementById('pdfContainer');
+    pdfContainer.innerHTML = '';
+
+    data.forEach(file => {
+      if (file.name.endsWith('.pdf')) {
+        const displayName = formatPdfName(file.name);
+        
+        const pdfItem = document.createElement('div');
+        pdfItem.className = 'pdf-item';
+        pdfItem.innerHTML = `
+          <h3>${displayName}</h3>
+          <button onclick="viewPdf('${file.name}')">View PDF</button>
+        `;
+        
+        pdfContainer.appendChild(pdfItem);
+      }
+    });
+  } catch (error) {
+    console.error('Error loading PDFs:', error);
+  }
 }
