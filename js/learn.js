@@ -96,7 +96,7 @@ function displayVideos() {
   let html = `<div class="video-section"><h3>Learning Video${videos.length>1?'s':''}</h3>`;
   videos.forEach((v, i) => {
     html += `
-      ${videos.length>1?`<h4 class="video-title">Video Part ${i+1}</h4>`:''}
+      ${videos.length>1?`<h4 class="video-title">Video ${i+1}</h4>`:''}
       <div class="video-container"><iframe src="${v}" allowfullscreen></iframe></div>`;
   });
   html += '</div>';
