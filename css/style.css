@@ -7,6 +7,8 @@ body {
   font-family: "Segoe UI", Roboto, sans-serif;
   min-height: 100vh;
   background: linear-gradient(135deg, #BAE8E8 0%, #E3F6F5 100%);
+  display: flex;
+  flex-direction: column;
 }
 
 /* navigation bar */
@@ -108,9 +110,8 @@ footer {
   color: white;
   text-align: center;
   padding: 1.5rem 0;
-  position: relative;
   width: 100%;
-  margin-top: 2rem;
+  margin-top: auto;
 }
 
 footer p {
