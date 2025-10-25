@@ -9,7 +9,21 @@ profileIcon.addEventListener('click', () => {
 function closeLogoutModal() {
   document.getElementById('logoutModal').classList.remove('active');
 }
-function confirmLogout() {
+async function confirmLogout() {
+  try {
+    // Import Supabase client
+    const { createClient } = supabase;
+    const SUPABASE_URL = 'https://zvkelfhmrjfvveembihp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2a2VsZmhtcmpmdnZlZW1iaWhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU0NTQ2ODMsImV4cCI6MjA1MTAzMDY4M30.9SkJLjhgyYMEAo5RjIXmIqkb_lPCJWQfq1xpEfG1vCg';
+    const supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Sign out from Supabase
+    await supabaseClient.auth.signOut();
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+
+  // Clear local storage and redirect
   localStorage.removeItem('user');
   alert('You have been logged out successfully!');
   window.location.href = 'login.html';
