@@ -112,10 +112,14 @@ function backToMain() {
 }
 
 function goToQuiz() {
-  if (currentMaterial)
-    window.location.href = 'quiz.html?material=' + currentMaterial.id;
-  else
-    window.location.href = 'quiz.html';
+  const user = localStorage.getItem('user');
+  const target = currentMaterial ? `quiz.html?material=${currentMaterial.id}` : 'quiz.html';
+  if (!user) {
+    const ret = encodeURIComponent(target);
+    window.location.href = `login.html?return=${ret}`;
+    return;
+  }
+  window.location.href = target;
 }
 
 async function loadPdfList() {

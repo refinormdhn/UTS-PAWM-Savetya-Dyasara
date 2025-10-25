@@ -178,6 +178,24 @@ body::after {
     display: block;
 }
 
+.google-button {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1rem;
+  border-radius: 50px;
+  border: 2px solid #e3f6f5;
+  background: #fff;
+  color: #272643;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+.google-button img { width: 20px; height: 20px; }
+.google-button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(44,105,141,.15); }
+
 @media (max-width: 768px) {
     .login-container {
         grid-template-columns: 1fr;
