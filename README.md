@@ -118,10 +118,10 @@ Server akan berjalan di: http://localhost:3000
 │ └── 🖥️ server.js
 │
 ├── 📁 materials
-│ ├── 📘 Delivery-Techniques.pdf
-│ ├── 📘 Engaging-Your-Audience.pdf
-│ ├── 📘 Handling-Questions.pdf
-│ └── 📘 Visual-Aids.pdf
+│ ├── 📘 Delivery-Techniques--Drafting-Conclusion-and-Writing-a-Process.pdf
+│ ├── 📘 Engaging-Your-Audience-and-Drafting-Openers.pdf
+│ ├── 📘 Handling-Questions-and-Body-Language.pdf
+│ └── 📘 Visual-Aids-and-Drafting-Body-of-Presentation.pdf
 │
 ├── 🏠 index.html
 ├── 📄 learn.html
