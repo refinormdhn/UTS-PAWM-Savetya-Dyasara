@@ -3,6 +3,9 @@ body {
   background: linear-gradient(135deg, #bae8e8 0%, #e3f6f5 100%);
   margin: 0;
   padding: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 nav {
@@ -63,6 +66,8 @@ nav {
   max-width: 900px;
   margin: 2rem auto;
   padding: 2rem;
+  flex: 1;
+  width: 100%;
 }
 
 .quiz-selection,
@@ -214,10 +219,8 @@ footer {
   color: #fff;
   text-align: center;
   padding: 1.5rem 0;
-  position: relative;
   width: 100%;
-  margin-top: 2rem;
-  
+  margin-top: auto;
 }
 
 footer p {
