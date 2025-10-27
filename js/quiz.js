@@ -1,16 +1,25 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-(function enforceAuth() {
+// Auth gate: block unauthenticated users
+const isAuthenticated = (function enforceAuth() {
   try {
     const user = localStorage.getItem('user');
     if (!user) {
       const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
       window.location.replace(`login.html?return=${returnUrl}`);
+      return false;
     }
+    return true;
   } catch (_) {
     window.location.replace('login.html');
+    return false;
   }
 })();
+
+// Stop script execution if not authenticated
+if (!isAuthenticated) {
+  throw new Error('Not authenticated');
+}
 
 const SUPABASE_URL = "https://zvkelfhmrjfvveembihp.supabase.co";
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2a2VsZmhtcmpmdnZlZW1iaWhwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2NTQxOTIsImV4cCI6MjA3NjIzMDE5Mn0.pYNKv2BwrWwG2eJDrPBlXr8S3lLptoVph9Ql0y4IIO0';
@@ -387,23 +396,28 @@ document.getElementById('backButton').addEventListener('click', backToSelection)
 window.closeLogoutModal = closeLogoutModal;
 window.confirmLogout = confirmLogout;
 
-loadQuizData().then((success) => {
-  if (success) {
-    const quizOptions = document.querySelectorAll('.quiz-option');
-    console.log('Quiz options found:', quizOptions.length);
-    
-    quizOptions.forEach((option, index) => {
-      option.addEventListener('click', () => {
-        console.log('Quiz option clicked:', index + 1);
-        startQuiz(index + 1);
-      });
-    });
+const currentUser = localStorage.getItem('user');
+if (currentUser) {
+  loadQuizData().then((success) => {
+    if (success) {
+      const quizOptions = document.querySelectorAll('.quiz-option');
+      console.log('Quiz options found:', quizOptions.length);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const materialId = urlParams.get('material');
-    if (materialId) {
-      console.log('Auto-starting quiz from URL:', materialId);
-      startQuiz(parseInt(materialId));
+      quizOptions.forEach((option, index) => {
+        option.addEventListener('click', () => {
+          console.log('Quiz option clicked:', index + 1);
+          startQuiz(index + 1);
+        });
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const materialId = urlParams.get('material');
+      if (materialId) {
+        console.log('Auto-starting quiz from URL:', materialId);
+        startQuiz(parseInt(materialId));
+      }
     }
-  }
-});
+  }).catch((error) => {
+    console.error('Failed to initialize quiz:', error);
+  });
+}
