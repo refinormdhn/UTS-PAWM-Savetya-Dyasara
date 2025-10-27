@@ -42,7 +42,6 @@ async function googleLogin() {
     options: {
       redirectTo,
       queryParams: {
-        // Forces account chooser on Google
         prompt: 'select_account'
       }
     }
@@ -50,9 +49,8 @@ async function googleLogin() {
   if (error) alert('Google login failed: ' + error.message);
 }
 
-// Legacy email/password removed from flow; keep functions if you still want them
-async function handleLogin(event) { /* ...existing code... */ }
-async function handleRegister(event) { /* ...existing code... */ }
+async function handleLogin(event) { }
+async function handleRegister(event) { }
 
 window.toggleForm = toggleForm;
 window.googleLogin = googleLogin;

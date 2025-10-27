@@ -1,6 +1,5 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-// Auth gate: block unauthenticated users
 (function enforceAuth() {
   try {
     const user = localStorage.getItem('user');
@@ -31,7 +30,7 @@ function closeLogoutModal() {
 
 function confirmLogout() {
   (async () => {
-    try { await supabase.auth.signOut(); } catch (e) { /* ignore */ }
+    try { await supabase.auth.signOut(); } catch (e) {}
     localStorage.removeItem('user');
     alert('You have been logged out successfully!');
     window.location.href = 'login.html';
@@ -48,7 +47,7 @@ let currentQuestion = 0;
 let userAnswers = [];
 let draggedElement = null;
 let draggedFromAnswer = false;
-let currentMaterialId = null; // Track current material/topic
+let currentMaterialId = null;
 
 async function loadQuizData() {
   try {
@@ -83,7 +82,7 @@ async function loadQuizData() {
       }
       
       quizData[q.topic].push({
-        id: q.id, // Simpan ID question untuk referensi
+        id: q.id, // simpen ID question untuk referensi
         question: q.question,
         options: q.options,
         correct: correctAnswer,
@@ -103,7 +102,7 @@ async function loadQuizData() {
 async function startQuiz(materialId) {
   console.log('Starting quiz for material:', materialId);
   
-  currentMaterialId = materialId; // Simpan material ID
+  currentMaterialId = materialId; // simpen material ID
   
   if (Object.keys(quizData).length === 0) {
     const loaded = await loadQuizData();
@@ -143,44 +142,61 @@ function loadQuestion() {
         div.className = 'ordering-item option filled';
         div.textContent = ans;
         div.draggable = true;
-        div.dataset.index = index;
-        
+        div.dataset.text = ans;
+
         div.addEventListener('dragstart', e => {
           draggedElement = ans;
           draggedFromAnswer = true;
           e.dataTransfer.effectAllowed = 'move';
-          div.style.opacity = '0.5';
+          e.dataTransfer.setData('text/plain', ans);
+          setTimeout(() => div.style.opacity = '0.5', 0);
         });
-        
+
         div.addEventListener('dragend', e => {
           div.style.opacity = '1';
-          draggedFromAnswer = false;
+          setTimeout(() => {
+            draggedElement = null;
+            draggedFromAnswer = false;
+          }, 100);
         });
-        
+
         div.addEventListener('dragover', e => {
           e.preventDefault();
-          e.dataTransfer.dropEffect = 'move';
+          e.stopPropagation();
+          if (draggedFromAnswer && draggedElement !== ans) {
+            e.dataTransfer.dropEffect = 'move';
+            div.style.borderTop = '3px solid #2c698d';
+          }
         });
-        
+
+        div.addEventListener('dragleave', () => {
+          div.style.borderTop = '';
+        });
+
         div.addEventListener('drop', e => {
           e.preventDefault();
           e.stopPropagation();
-          
-          if (draggedFromAnswer && draggedElement !== ans) {
+          div.style.borderTop = '';
+
+          if (draggedFromAnswer && draggedElement && draggedElement !== ans) {
             const draggedIndex = userAnswers[currentQuestion].indexOf(draggedElement);
             const targetIndex = index;
-            
-            const newAnswers = [...userAnswers[currentQuestion]];
-            newAnswers.splice(draggedIndex, 1);
-            newAnswers.splice(targetIndex, 0, draggedElement);
-            userAnswers[currentQuestion] = newAnswers;
-            
-            draggedElement = null;
-            draggedFromAnswer = false;
-            loadQuestion();
+
+            if (draggedIndex !== -1) {
+              const newAnswers = [...userAnswers[currentQuestion]];
+              newAnswers.splice(draggedIndex, 1);
+              newAnswers.splice(targetIndex, 0, draggedElement);
+              userAnswers[currentQuestion] = newAnswers;
+
+              setTimeout(() => {
+                draggedElement = null;
+                draggedFromAnswer = false;
+                loadQuestion();
+              }, 0);
+            }
           }
         });
-        
+
         list.appendChild(div);
       });
     } else {
@@ -305,7 +321,7 @@ async function submitQuiz() {
     
     const dataToInsert = answersToSave.map(ans => ({
       user_id: userData.id,
-      question_id: ans.question_id, // Sekarang ini akan beda-beda per soal
+      question_id: ans.question_id,
       is_correct: ans.is_correct
     }));
 
