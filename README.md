@@ -47,52 +47,8 @@ https://savetya-dyasara.vercel.app
 
 ### Database
 - **Supabase** - Penyimpan data 
-  
----
-
-## 🧠 Backend Setup & Usage Guide
-
-Proyek ini menggunakan **Node.js + Express** untuk backend dan **Supabase** sebagai penyimpan data.
 
 ---
-
-### 👥 1. Clone Repository
-
-Clone repository ini ke lokal dengan perintah berikut:
-
-git clone https://github.com/refinormdhn/UTS-PAWM-Savetya-Dyasara.git
-
-### 🧩 2. Buat File `.env`
-
-Tambahkan file bernama `.env` di **root folder** (sejajar dengan `package.json`), lalu isi dengan:
-
-"SUPABASE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp2a2VsZmhtcmpmdnZlZW1iaWhwIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc2MDY1NDE5MiwiZXhwIjoyMDc2MjMwMTkyfQ.biN_A3mMgAMZNT_dvOB-cghJVqgG68fV7rQ7NqWsiRA"
-
-### 📦 3. Install Dependencies
-
-npm install dotenv
-npm install express node-fetch dotenv
-
-### 🚀 4. Menjalankan Server
-
-Server akan berjalan di: http://localhost:3000
-
-<img width="1090" height="66" alt="Screenshot 2025-10-27 at 23 16 03" src="https://github.com/user-attachments/assets/1c424f9f-9d84-4d0e-ac71-445e65b934e5" />
-
-
-### 🔗 5. Testing API di Postman
-
-| Endpoint | Method | Deskripsi |
-|-----------|---------|-----------|
-| `http://localhost:3000/api/quiz` | **GET** | Mengambil data quiz dari Supabase |
-| `http://localhost:3000/api/ping`  | **GET** | Mengembalikan respon sederhana untuk pengecekan koneksi server |
-
----
-
-<img width="1440" height="900" alt="Screenshot 2025-10-27 at 23 13 21" src="https://github.com/user-attachments/assets/fe0c86f9-a9d8-4611-ab13-5b617595fcd3" />
-
-<img width="1440" height="900" alt="Screenshot 2025-10-27 at 23 13 52" src="https://github.com/user-attachments/assets/c58f27f2-1038-4acd-8efc-b35a5e143164" />
-
 
 ## 📂 Struktur Proyek
 
